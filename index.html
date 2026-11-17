@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brechó — peças únicas</title>
+    <meta name="description" content="Brechó online: peças únicas, garimpadas a dedo." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Barra fixa do topo -->
+    <header class="topo">
+      <a href="#" class="topo__logo" data-nome>Brechó</a>
+      <span class="topo__info" id="contador"></span>
+    </header>
+
+    <main>
+      <!-- Abertura com o nome gigante -->
+      <section class="hero">
+        <p class="hero__sobre" id="slogan"></p>
+        <h1 class="hero__titulo" id="titulo"></h1>
+        <div class="hero__rodape">
+          <span>Moda circular · envio para todo o Brasil</span>
+          <span>Role para ver as peças ↓</span>
+        </div>
+      </section>
+
+      <!-- Faixa de texto que corre sozinha (acelera quando você rola) -->
+      <div class="faixa" aria-hidden="true">
+        <div class="faixa__trilho" id="faixa"></div>
+      </div>
+
+      <!-- Vitrine: os cards são criados pelo main.js a partir de pecas.js -->
+      <section class="vitrine" id="pecas">
+        <div class="vitrine__cabecalho">
+          <h2 class="vitrine__titulo">Escolha a <em>sua</em><br />próxima peça</h2>
+          <p class="vitrine__texto">Cada peça é única: quando sai, não volta. Clique para ver de perto.</p>
+        </div>
+        <div class="grade" id="grade"></div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <p class="rodape__nome" data-nome>Brechó</p>
+      <div class="rodape__links" id="links"></div>
+    </footer>
+
+    <!-- Janela da peça (fica escondida até clicar num card) -->
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-nome" aria-hidden="true">
+      <div class="modal__fundo" data-fechar></div>
+      <div class="modal__painel" data-lenis-prevent>
+        <button class="modal__fechar" data-fechar aria-label="Fechar">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19" /></svg>
+        </button>
+
+        <div class="modal__galeria">
+          <div class="modal__principal" id="modal-principal"></div>
+          <div class="modal__miniaturas" id="modal-miniaturas"></div>
+        </div>
+
+        <div class="modal__info">
+          <span class="modal__categoria" id="modal-categoria"></span>
+          <h2 class="modal__nome" id="modal-nome"></h2>
+          <p class="modal__preco" id="modal-preco"></p>
+          <dl class="modal__detalhes">
+            <div><dt>Tamanho</dt><dd id="modal-tamanho"></dd></div>
+            <div>
+              <dt>Condição</dt>
+              <dd>
+                <span class="nivel" id="modal-nivel" aria-hidden="true"></span>
+                <span id="modal-condicao"></span>
+              </dd>
+            </div>
+          </dl>
+          <p class="modal__obs" id="modal-obs"></p>
+          <p class="modal__descricao" id="modal-descricao"></p>
+          <a class="botao" id="modal-comprar" target="_blank" rel="noopener">Quero essa peça</a>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
