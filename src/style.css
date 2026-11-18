@@ -70,7 +70,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: -0.05em;
 }
 .palavra { display: inline-block; white-space: nowrap; }
-.letra { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; }
+/* A máscara (overflow) precisa de folga em volta da letra, senão corta
+   o acento do "ó" e as pontas das letras. O padding cria a folga e a
+   margem negativa devolve o espaço, então o texto não muda de lugar. */
+.letra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.2em 0.08em 0.1em;
+  margin: -0.2em -0.08em -0.1em;
+}
 .letra > span { display: inline-block; }
 .hero__rodape {
   display: flex;
