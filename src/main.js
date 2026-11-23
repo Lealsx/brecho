@@ -20,7 +20,11 @@ gsap.registerPlugin(ScrollTrigger);
 // Respeita quem pediu "reduzir movimento" nas configurações do sistema
 const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const formatarPreco = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+// WhatsApp: tira espaços, traços e parênteses; se faltar o 55 do Brasil, coloca
+const soDigitos = String(config.whatsapp).replace(/\D/g, '');
+const whatsapp = soDigitos.length <= 11 ? `55${soDigitos}` : soDigitos;
+
+const formatarPreco =(valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 // Evita que um texto com < ou " quebre o HTML gerado
 const esc = (texto) =>
@@ -44,7 +48,8 @@ document.querySelectorAll('[data-nome]').forEach((el) => (el.textContent = confi
 document.getElementById('slogan').textContent = config.slogan;
 
 const disponiveis = pecas.filter((p) => !p.vendida).length;
-document.getElementById('contador').textContent = `${disponiveis} peças disponíveis`;
+document.getElementById('contador').textContent =
+  disponiveis === 1 ? '1 peça disponível' : `${disponiveis} peças disponíveis`;
 
 // Título gigante: cada letra vira um <span> para animar separadamente
 const titulo = document.getElementById('titulo');
@@ -67,7 +72,7 @@ document.getElementById('faixa').innerHTML = grupo + grupo;
 // Links do rodapé
 const links = [];
 if (config.instagram) links.push(`<a href="https://instagram.com/${esc(config.instagram)}" target="_blank" rel="noopener">Instagram</a>`);
-links.push(`<a href="https://wa.me/${esc(config.whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>`);
+links.push(`<a href="https://wa.me/${whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`);
 document.getElementById('links').innerHTML = links.join('');
 
 // ------------------------------------------------------------
@@ -157,6 +162,10 @@ const botaoFechar = modal.querySelector('.modal__fechar');
 const comprar = document.getElementById('modal-comprar');
 const elementosInfo = '.modal__info > *, .modal__miniaturas';
 
+// Partes da página que ficam "congeladas" (sem foco nem clique) com a janela aberta
+const fundoDaPagina = document.querySelectorAll('.topo, main, .rodape');
+const congelarFundo = (sim) => fundoDaPagina.forEach((el) => (el.inert = sim));
+
 let atual = null; // { peca, card, vista } da peça aberta
 let animando = false;
 
@@ -192,7 +201,7 @@ function preencher(peca) {
     const msg = `Oi! Tenho interesse na peça "${peca.nome}" (${formatarPreco(peca.preco)}). ${link}`;
     comprar.textContent = 'Quero essa peça';
     comprar.removeAttribute('aria-disabled');
-    comprar.href = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(msg)}`;
+    comprar.href = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
   }
 }
 
@@ -221,6 +230,7 @@ function abrir(peca, card, { animar = true } = {}) {
   document.documentElement.classList.add('travado');
   modal.classList.add('aberto');
   modal.setAttribute('aria-hidden', 'false');
+  congelarFundo(true);
   modal.querySelector('.modal__painel').scrollTop = 0;
   history.replaceState(null, '', `#${peca.id}`); // deixa o link compartilhável
 
@@ -273,6 +283,7 @@ function fechar() {
     onComplete: () => {
       modal.classList.remove('aberto');
       modal.setAttribute('aria-hidden', 'true');
+      congelarFundo(false);
       gsap.set(['.modal__fundo', '.modal__painel', principal, ...document.querySelectorAll(elementosInfo)], { clearProps: 'all' });
       if (origem) origem.style.visibility = '';
       document.documentElement.classList.remove('travado');
@@ -393,9 +404,26 @@ principal.addEventListener('pointerup', (e) => {
 });
 principal.addEventListener('pointercancel', () => (inicioX = null));
 
-// Se alguém abrir um link tipo seusite.com/#vestido-preto-slip, já abre a peça
-const idDoLink = decodeURIComponent(location.hash.slice(1));
-const pecaDoLink = pecas.find((p) => p.id === idDoLink);
-if (pecaDoLink) {
-  abrir(pecaDoLink, grade.querySelector(`[data-id="${CSS.escape(idDoLink)}"]`), { animar: false });
+// Se alguém abrir um link tipo seusite.com/#vestido-preto-slip, já abre a peça.
+// Também funciona se o link mudar com o site já aberto (evento "hashchange").
+function abrirPeloLink() {
+  let id = '';
+  try {
+    id = decodeURIComponent(location.hash.slice(1));
+  } catch {
+    return; // link malformado tipo "#%E0": só ignora, não pode quebrar a página
+  }
+  const peca = pecas.find((p) => p.id === id);
+  if (!peca || atual?.peca === peca || animando) return;
+  if (atual) {
+    // outra peça já está aberta: troca direto, sem animação de voo
+    const midiaAnterior = atual.card?.querySelector('.card__midia');
+    if (midiaAnterior) midiaAnterior.style.visibility = '';
+    atual = null;
+    animando = false;
+    congelarFundo(false);
+  }
+  abrir(peca, grade.querySelector(`[data-id="${CSS.escape(id)}"]`), { animar: false });
 }
+abrirPeloLink();
+window.addEventListener('hashchange', abrirPeloLink);

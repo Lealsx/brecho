@@ -10,9 +10,6 @@ export const config = {
   // Frase curta que aparece em cima do título
   slogan: 'Peças únicas, garimpadas a dedo e prontas para uma segunda história.',
 
-  // Número do WhatsApp com DDI + DDD, só números (ex.: 5511999998888)
-  whatsapp: '5500000000000',
-
-  // Seu @ do Instagram (sem o @). Deixe '' para esconder.
-  instagram: 'seubrecho',
+  // Número do WhatsApp com 55 (Brasil) + DDD + número (ex.: 5511999998888)
+  whatsapp: '5513981483734',
 };
