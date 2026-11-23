@@ -9,8 +9,8 @@
   --acento: #b8502c;       /* cor de destaque (terracota) */
   --raio: 6px;
   --margem: clamp(16px, 4vw, 56px);
-  --fonte-titulo: 'Fraunces', Georgia, serif;
-  --fonte-texto: 'Inter', system-ui, sans-serif;
+  --fonte-titulo: 'Fraunces Variable', Georgia, serif;
+  --fonte-texto: 'Inter Variable', system-ui, sans-serif;
 
   /* medidas da janela da peça */
   --modal-borda: clamp(0px, 2.5vw, 40px);

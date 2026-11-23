@@ -9,6 +9,10 @@
 
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+// Fontes servidas pelo próprio site (sem Google Fonts: mais rápido e sem enviar o IP do visitante ao Google)
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '@fontsource-variable/inter';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './style.css';
